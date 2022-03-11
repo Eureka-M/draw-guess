@@ -5,7 +5,7 @@
         <GuessCanvas v-else :status="gameStatus"/>
 		<div v-if="showAnswer">正确答案是：{{guessWord}}</div>
         <!-- 猜图端 -->
-        <MyProgress v-if="showProgress && false" @progressEnd="progressEnd"/>
+        <my-progress v-if="showProgress" :seconds="100" @progressEnd="progressEnd"/>
     </div>
 </template>
 

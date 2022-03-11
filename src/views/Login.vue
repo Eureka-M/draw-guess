@@ -5,7 +5,7 @@
                 <h3>进入游戏</h3>
                 <div class="name">
                     <span>昵称：</span>
-                    <Input style="width: calc(100% - 100px)" v-model="name"/>
+                    <Input style="width: calc(100% - 100px)" v-model="name" @on-enter="login"/>
                 </div>
                 <span>选择头像：</span>
                 <div class="img-list">
@@ -47,6 +47,10 @@ export default {
     },
     methods: {
         login () {
+            if (!this.name) {
+                this.$Message.warning('昵称不能为空')
+                return 
+            }
             let user = {"name": this.name, "avatar": this.curIndex}
             this.$store.commit('user', user)
             this.ws.send(JSON.stringify({type: 'login', name: this.name, avatar: this.curIndex}))

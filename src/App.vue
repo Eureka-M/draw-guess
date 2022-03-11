@@ -5,7 +5,7 @@
 </template>
 
 <script>
-const ws = new WebSocket('ws://172.27.12.43:3000');
+const ws = new WebSocket('ws://172.27.12.198:3000');
 
 export default {
 	name: "App",
@@ -23,9 +23,25 @@ export default {
 		ws.addEventListener('error', this.handleWsError.bind(this), false)
 		ws.addEventListener('message', this.handleWsMessage.bind(this), false)
 
-		window.onbeforeunload = () => {
+		window.onbeforeunload = (event) => {
 			let that = this
-			ws.send(JSON.stringify({type: 'disConnect', user: that.$store.state.user}));
+			console.log(that.$route.name)
+			if (that.$route.path !== '/' && that.$route.path !== '/login') {
+				let e = event || window.event
+				if (e) {
+					e.returnValue = '关闭提示'
+				}
+				return '关闭提示'
+			} else {
+				window.onbeforeunload = null
+			}
+		}
+
+		window.onunload = () => {
+			let that = this
+			if (that.$route.path !== '/' && that.$route.path !== '/login') { 
+				ws.send(JSON.stringify({type: 'disConnect', user: that.$store.state.user}))
+			}
 		}
 	},
 	methods: {
@@ -39,7 +55,6 @@ export default {
 			console.log('前端：error' + ' ' + e)
 		},
 		handleWsMessage (e) {
-			//console.log('前端：message' + ' ' + e.data)
 			let msg = JSON.parse(e.data)
 			console.log(msg)
 

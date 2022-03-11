@@ -1,5 +1,5 @@
 <template>
-    <div class="home-wrapper">
+    <div class="home-wrapper" v-if="user && user.name">
         <PlayerList />
 		<div class="main-content">
 			<div class="draw-place">
@@ -28,6 +28,11 @@ export default {
         },
 		gameStatus () {
 			return this.$store.state.gameStatus
+		}
+	},
+	mounted() {
+		if (!this.user.name) {
+			this.$router.push('login')
 		}
 	}
 }
