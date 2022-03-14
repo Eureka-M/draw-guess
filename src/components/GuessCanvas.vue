@@ -130,7 +130,8 @@ export default {
                     await sleep(10)
                     that.showAnswer = false
                 }
-            
+                
+                play()
             }
         }
             
