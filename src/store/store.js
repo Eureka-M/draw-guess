@@ -22,7 +22,8 @@ const store = new Vuex.Store({
         color: '#000',
         paintWidth: 25,
 
-        draw: {}
+        draw: {},
+        countDownDuration: 0
     },
     // getters 可以认为是store的计算属性，
     //getter的返回值会根据它的依赖被缓存起来，且只有当它的依赖值发生了变化才会被重新计算
@@ -53,37 +54,40 @@ const store = new Vuex.Store({
         connentWs (state, ws) {
             state.ws = ws
         },
-        chatMsg (state, Msg) {
-            state.chatMsgList.push(Msg)
+        chatMsg (state, msg) {
+            state.chatMsgList.push(msg)
         },
-        user (state, Msg) {
-            state.user = Msg
+        user (state, msg) {
+            state.user = msg
         },
-        userList (state, Msg) {
-            state.userList = Msg
+        userList (state, msg) {
+            state.userList = msg
         },
-        gameBegin (state, Msg) {
-            state.drawer = Msg.drawer
-            state.gameStatus = Msg.status
-            state.guessWord = Msg.guessWord
+        gameBegin (state, msg) {
+            state.drawer = msg.drawer
+            state.gameStatus = msg.status
+            state.guessWord = msg.guessWord
         },
-        gameOver (state, Msg) {
-            state.gameStatus = Msg.status
+        gameOver (state, msg) {
+            state.gameStatus = msg.status
         },
-        gameFirstStart (state, Msg) {
+        gameFirstStart (state, msg) {
             state.gameStart = true
         },
-        changeTool (state, Msg) {
-            state.tool = Msg
+        changeTool (state, msg) {
+            state.tool = msg
         },
-        changeColor (state, Msg) {
-            state.color = Msg
+        changeColor (state, msg) {
+            state.color = msg
         },
-        changePaintWidth (state, Msg) {
-            state.paintWidth = Msg
+        changePaintWidth (state, msg) {
+            state.paintWidth = msg
         },
-        draw (state, Msg) {
-            state.draw = Msg
+        draw (state, msg) {
+            state.draw = msg
+        },
+        countDown (state, msg) {
+            state.countDownDuration = msg
         }
     },
     // action类似于 mutation, 

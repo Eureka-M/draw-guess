@@ -127,10 +127,10 @@ export default {
                     that.showCanvas = false
                     that.showAnswer = true
 
-                    await sleep(10)
+                    await sleep(15)
                     that.showAnswer = false
                 }
-                
+
                 play()
             }
         }

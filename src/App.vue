@@ -98,6 +98,11 @@ export default {
 				this.$store.commit('changeColor', msg.color)
 			}
 
+			// 倒计时
+			if (msg.type == 'countDown') {
+				this.$store.commit('countDown', msg.duration)
+			}
+
 		},
 	}
 };

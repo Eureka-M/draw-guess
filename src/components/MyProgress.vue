@@ -16,21 +16,14 @@ export default {
             isStart: false,
             gameBeforeTimer: null,
             gameTimer: null,
+            countDownTimer: null,
             GAME_BEFORE_TIMER_LENGTH: GAME_BEFORE_TIMER_LENGTH,
             GAME_TIMER_LENGTH: GAME_TIMER_LENGTH,
             GAME_AFTER_TIMER_LENGTH: GAME_AFTER_TIMER_LENGTH
         }
     },
-    props: {
-        seconds: {
-            type: Number,
-            default: 0,
-            require: true
-        }
-    },
     watch: {
-        seconds (val) {
-            console.log(watch)
+        countDownDuration(val) {
             this.countDown(val)
         }
     },
@@ -44,19 +37,34 @@ export default {
                 return '#00C342'
             }
         },
+        countDownDuration () {
+            return this.$store.state.countDownDuration
+        }
     },
     mounted() {
-        this.countDown(this.seconds)
+        this.init()
+    },
+    onBeforeUnload() {
+        this.countDownTimer = null
     },
     methods: {
+        init() {
+            if (this.$store.state.gameStatus == 'begin') {
+                this.countDown(this.countDownDuration)
+            }
+        },
         countDown (seconds) {
-            setTimeout(() => {
-                if (seconds > 1) {
+            let that = this
+            this.countDownTimer = setTimeout(() => {
+                if (seconds > 0) {
                     --seconds
-                    this.percent = seconds / this.seconds
-                    this.countDown(seconds)
+                    console.log('秒', seconds)
+                    that.percent = (seconds / that.countDownDuration) * 100
+                    console.log('进度条', that.percent)
+                    that.countDown(seconds)
                 } else {
-                    this.$emit('progressEnd')
+                    that.$emit('progressEnd')
+                    this.countDownTimer = null
                 }
             }, 1000)
         },

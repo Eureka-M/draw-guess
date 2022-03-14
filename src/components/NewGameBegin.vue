@@ -5,12 +5,12 @@
         <GuessCanvas v-else :status="gameStatus"/>
 		<div v-if="showAnswer">正确答案是：{{guessWord}}</div>
         <!-- 猜图端 -->
-        <my-progress v-if="showProgress" :seconds="seconds" @progressEnd="progressEnd"/>
+        <my-progress @progressEnd="progressEnd"/>
     </div>
 </template>
 
 <script>
-
+import { sleep } from '../utils/sleep'
 export default {
     props: {
     },
@@ -26,7 +26,7 @@ export default {
 				this.showAnswer = true
 			} else {
 				this.showAnswer = false
-				this.showProgress = true
+                this.init()
 			}
             return this.$store.state.gameStatus
         },
@@ -51,16 +51,29 @@ export default {
         }
     },
     watch: {
-        gameStatus(val) {
-            if (val == 'begin') {
-                this.seconds = 10
-            }
-        }
+        
     },
     mounted () {
-        this.showProgress = true
+        this.init()
     },
     methods: {
+        init() {
+            if (this.$store.state.gameStatus == 'begin') {
+                console.log('new game begin')
+                let that = this
+                async function play() {
+                    that.ws.send(JSON.stringify({type: 'countDown', duration: 10}))
+                    await sleep(10)
+                    
+                    that.ws.send(JSON.stringify({type: 'countDown', duration: 60}))
+                    await sleep(60)
+
+                    that.ws.send(JSON.stringify({type: 'countDown', duration: 15}))
+                    await sleep(15)
+                }
+                play()
+            }
+        },
         progressEnd () {
             this.showProgress = false
         }

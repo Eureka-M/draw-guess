@@ -112,7 +112,7 @@ export default {
 					that.showCanvas = false
 					that.showAnswer = true
 
-					await sleep(10)
+					await sleep(15)
 					that.showAnswer = false
 					//轮流当画家  // 随机一个选词
 					let newDrawer = generateDrawer(that.drawer, that.userList)
@@ -122,7 +122,7 @@ export default {
 					that.ws.send(JSON.stringify({type: 'gameBegin', drawer: newDrawer, guessWord: word, position: 'NewGame'}))
 					console.log(newDrawer, word)
 				}
-				
+
 				play()
             }
         }
