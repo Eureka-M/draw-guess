@@ -21,16 +21,17 @@ export default {
             GAME_AFTER_TIMER_LENGTH: GAME_AFTER_TIMER_LENGTH
         }
     },
-    computed: {
-        gameStatus () {
-            return this.$store.state.gameStatus
+    props: {
+        seconds: {
+            type: Number,
+            default: 0,
+            require: true
         }
     },
     watch: {
-        gameStatus (val) {
-            if (val == 'begin') {
-                this.initProgress()
-            }
+        seconds (val) {
+            console.log(watch)
+            this.countDown(val)
         }
     },
     computed: {
@@ -42,57 +43,23 @@ export default {
             } else if (this.percent < 100) {
                 return '#00C342'
             }
-        }
+        },
     },
-    created() {
-        this.initProgress ()
+    mounted() {
+        this.countDown(this.seconds)
     },
     methods: {
-        initProgress () {
-            if (this.$store.state.gameStatus == 'begin') {
-                let that = this
-                // 新游戏前计时器
-                this.GAME_BEFORE_TIMER_LENGTH = 10
-                this.GAME_TIMER_LENGTH = 60
-                this.GAME_AFTER_TIMER_LENGTH = 10
-                this.percent = 100
-                
-                that.gameBeforeTimer = setInterval(() => {
-                    that.GAME_BEFORE_TIMER_LENGTH = that.GAME_BEFORE_TIMER_LENGTH - 0.1
-                    that.percent = that.GAME_BEFORE_TIMER_LENGTH / 10 * 100
-                    
-                    if (that.percent < 0) {
-                        clearInterval(that.gameBeforeTimer)
-                        
-                        // 游戏中计时器
-                        
-                        that.gameTimer = setInterval(() => {
-                            that.GAME_TIMER_LENGTH = that.GAME_TIMER_LENGTH - 0.1
-                            that.percent = that.GAME_TIMER_LENGTH / 60 * 100
-
-                            if (that.percent < 0) {
-                                //游戏后计时器
-                                clearInterval(that.gameTimer)
-
-                                
-                                that.gameAfter = setInterval(() => {
-
-                                    that.GAME_AFTER_TIMER_LENGTH = that.GAME_AFTER_TIMER_LENGTH - 0.1
-                                    that.percent = that.GAME_AFTER_TIMER_LENGTH / 10 * 100
-
-                                    if (that.percent < 0) {
-                                        clearInterval(that.gameAfter)
-                                        //that.$emit('progressEnd')
-                                        
-                                    }
-
-                                }, 100)
-                            }
-                        }, 100)
-                    }
-                }, 100)
-            }
-        }
+        countDown (seconds) {
+            setTimeout(() => {
+                if (seconds > 1) {
+                    --seconds
+                    this.percent = seconds / this.seconds
+                    this.countDown(seconds)
+                } else {
+                    this.$emit('progressEnd')
+                }
+            }, 1000)
+        },
     }
 }
 </script>

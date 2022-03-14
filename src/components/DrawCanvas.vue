@@ -10,6 +10,7 @@
 <script>
 import generateWord from '../utils/guessWords'
 import generateDrawer from '../utils/whoIsNextDrawer'
+import { sleep } from '../utils/sleep'
 
 export default {
     data() {
@@ -64,17 +65,24 @@ export default {
         drawTool (val) {
             // tool: brush 笔  eraser 橡皮檫 square 矩形 border 矩形框 circle 圆 radius 圆框 line 直线 arc 圆弧
             if (this.draw) {
-
-                if (val == 'brush') {
-                    this.draw.draw()
-                } else if (val == 'line') {
-                    this.draw.drawLine()
-                } else if (val == 'circle') {
-					this.draw.drawRound()
-				} else if (val == 'square') {
-					this.draw.drawRect()
-				} else if (val == 'border') {
-					this.draw.drawBorder()
+				switch (val) {
+					case 'brush':
+						this.draw.draw()
+						break
+					case 'line':
+						this.draw.drawLine()
+						break
+					case 'circle':
+						this.draw.drawRound()
+						break
+					case 'square':
+						this.draw.drawRect()
+						break
+					case 'border':
+						this.draw.drawBorder()
+						break
+					default:
+						break
 				}
             }
         }
@@ -87,51 +95,35 @@ export default {
             if (this.$store.state.gameStatus == 'begin') {
                 console.log('new game begin')
                 let that = this
-                
-                that.showGameBefore = true
-                
-                that.gameBeginTimer = window.setTimeout(() => {
-                    console.log('10s后执行')
 
-                    that.showGameBefore = false
-                    that.showCanvas = true
+				async function play () {
+					that.showGameBefore = true
+					await sleep(10)
 
-                    that.$nextTick(() => {
-                         that.draw = new canvasDraw("myCanvas",this.$store.state.ws);
-		                 that.draw.draw();
+					that.showGameBefore = false
+					that.showCanvas = true
+					that.$nextTick(() => {
+						that.draw = new canvasDraw("myCanvas", that.$store.state.ws);
+						that.draw.draw()
                     })
-                    
-                    window.clearTimeout(that.gameBeginTimer)
 
-                    that.gameTimer = window.setTimeout(() => {
-                        console.log('1min后执行')
-                       
-                        that.ws.send(JSON.stringify({type: 'gameOver'}))
+					await sleep(60)
+					that.ws.send(JSON.stringify({type: 'gameOver'}))
+					that.showCanvas = false
+					that.showAnswer = true
 
-                        that.showCanvas = false
-                        that.showAnswer = true
-                        window.clearTimeout(that.gameTimer)
+					await sleep(10)
+					that.showAnswer = false
+					//轮流当画家  // 随机一个选词
+					let newDrawer = generateDrawer(that.drawer, that.userList)
+					let word = generateWord()
+					//发送信令告知新一轮游戏开始
 
-                        that.gameOverTimer = window.setTimeout(() => {
-                            console.log('10s后执行')
-
-                            that.showAnswer = false
-                            // 轮流当画家  // 随机一个选词
-
-                            let newDrawer = generateDrawer(that.drawer, that.userList)
-                            let word = generateWord()
-                            //发送信令告知新一轮游戏开始
-
-                            that.ws.send(JSON.stringify({type: 'gameBegin', drawer: newDrawer, guessWord: word, position: 'NewGame'}))
-                            console.log(newDrawer, word)
-                            window.clearTimeout(that.gameOverTimer)
-
-                        }, 10 * 1000)
-
-                    }, 60 * 1000)
-
-                }, 10 * 1000)
-            
+					that.ws.send(JSON.stringify({type: 'gameBegin', drawer: newDrawer, guessWord: word, position: 'NewGame'}))
+					console.log(newDrawer, word)
+				}
+				
+				play()
             }
         }
     }

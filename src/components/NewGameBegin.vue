@@ -5,7 +5,7 @@
         <GuessCanvas v-else :status="gameStatus"/>
 		<div v-if="showAnswer">正确答案是：{{guessWord}}</div>
         <!-- 猜图端 -->
-        <my-progress v-if="showProgress" :seconds="100" @progressEnd="progressEnd"/>
+        <my-progress v-if="showProgress" :seconds="seconds" @progressEnd="progressEnd"/>
     </div>
 </template>
 
@@ -46,10 +46,16 @@ export default {
         return {
             showProgress: false,
             ws: this.$store.state.ws,
-			showAnswer: false
+			showAnswer: false,
+            seconds: 0
         }
     },
     watch: {
+        gameStatus(val) {
+            if (val == 'begin') {
+                this.seconds = 10
+            }
+        }
     },
     mounted () {
         this.showProgress = true

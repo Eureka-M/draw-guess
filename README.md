@@ -1,8 +1,8 @@
 > # draw-guess
 
-一个你画我猜的小游戏，主要用到的技术栈是: vue webSocket canvas 
+一个你画我猜的小游戏，主要用到的技术栈是: vue webSocket canvas
 
-UI风格来源于网站: 
+规则以及 UI 来源于网站: https://gartic.io/
 
 项目运行：
 
@@ -12,10 +12,10 @@ cd draw-guess
 npm i
 npm run dev
 ```
+
 </br>
 
 > #### 项目结构
-
 
 ```javascript
 ├─config
@@ -39,7 +39,7 @@ npm run dev
 |  |     ├─DrawCanvas.vue 画图端
 |  |     ├─GuessCanvas.vue 猜图端
 |  |     ├─MyProgress.vue 进度条
-|  |     ├─NewGameBegin.vue 
+|  |     ├─NewGameBegin.vue
 |  |     ├─Paint.vue 画笔
 |  |     └PlayerList.vue 玩家列表
 |  ├─assets 一些静态资源
@@ -50,20 +50,19 @@ npm run dev
 ├─README.md
 
 ```
+
 </br>
 
 > #### 学到了什么？
 
-
-- ** vuex ** 在实习之前就学过vuex，但是了解不深，之后实习因为并不需要将数据存入的store中，差不多忘了，通过这次项目连续，重新复习了vuex，也了解得更加深刻。
-- ** canvas ** 学习了canvas基础的api, 简单的画图操作基本上都能完成，附加
-[canvas学习链接](https://malun666.github.io/aicoder_vip_doc/#/pages/canvas)
-- ** websocket ** 学习了websocket的是如何使用的，以及websocket协议的基本知识  
+- ** vuex ** 在实习之前就学过 vuex，但是了解不深，之后实习因为并不需要将数据存入的 store 中，差不多忘了，通过这次项目连续，重新复习了 vuex，也了解得更加深刻。
+- ** canvas ** 学习了 canvas 基础的 api, 简单的画图操作基本上都能完成，附加
+  [canvas 学习链接](https://malun666.github.io/aicoder_vip_doc/#/pages/canvas)
+- ** websocket ** 学习了 websocket 的是如何使用的，以及 websocket 协议的基本知识
 
 </br>
 
 > #### 项目还不完善的地方
-
 
 - 词库优化（选出的词做一次优化）
 - 随机选择两个词语，可以让画家进行选择
@@ -84,7 +83,10 @@ npm run dev
 
 > #### 后期优化记录（留坑慢慢填~）
 
+- 2022-03-10 刷新页面不直接退出登录，弹出阻止弹框
+  监听 onbeforeunload 弹出阻止弹窗
+  监听 onunload 页面关闭之前发出 disConnect 信令
 
-
-
-
+- 2022-03-14 解决代码中的回调地狱
+  /utils/sleep.js sleep 函数
+  async await promise 解决回调地狱

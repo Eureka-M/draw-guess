@@ -8,6 +8,8 @@
 </template>
 
 <script>
+import { sleep } from '../utils/sleep'
+
 export default {
     props: {
         status: {
@@ -114,37 +116,20 @@ export default {
             if (this.$store.state.gameStatus == 'begin') {
                 console.log('new game begin')
                 let that = this
-                
-                that.showGameBefore = true
-                
-                that.gameBeginTimer = window.setTimeout(() => {
-                    console.log('10s后执行')
+                async function play() {
+                    that.showGameBefore = true
 
+                    await sleep(10)
                     that.showGameBefore = false
                     that.showCanvas = true
 
-                    window.clearTimeout(that.gameBeginTimer)
-                    
-                    that.gameTimer = window.setTimeout(() => {
-                        console.log('1min后执行')
-                        
-                        that.showCanvas = false
-                        that.showAnswer = true
+                    await sleep(60)
+                    that.showCanvas = false
+                    that.showAnswer = true
 
-                        window.clearTimeout(that.gameTimer)
-
-                        that.gameOverTimer = window.setTimeout(() => {
-                            console.log('10s后执行')
-
-                            that.showAnswer = false
-
-                            window.clearTimeout(that.gameOverTimer)
-
-                        }, 10 * 1000)
-
-                    }, 60 * 1000)
-
-                }, 10 * 1000)
+                    await sleep(10)
+                    that.showAnswer = false
+                }
             
             }
         }
