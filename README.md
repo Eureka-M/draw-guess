@@ -90,3 +90,9 @@ npm run dev
 - 2022-03-14 解决代码中的回调地狱
   /utils/sleep.js sleep 函数
   async await promise 解决回调地狱
+
+- 2022-03-14 新增进度条（遗留一个小问题）
+  原本思路：根据 gameStatus 的状态等待改变: sleep(10) -> 进度条 10 秒 -> sleep(60) -> 进度条 60 秒...
+  问题：在一轮一轮的游戏之后, sleep 每个端的不同影响（比如画笔端画图）导致进度条的不同步
+  改进：sleep 之后发送 countDown 信令，各端每局游戏都能收到三次 countDown 的信令，收到信令立马改变进度条。保证各端基本同步的状态。
+  遗留问题：一轮游戏之后 sleep10 秒接着就是一轮开始 sleep10 秒，出现的问题是 duration 相同，导致 store 不会触发更新，暂时解决将一轮游戏之后的 sleep 时间改成 15 秒。
