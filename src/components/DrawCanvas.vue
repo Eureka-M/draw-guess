@@ -143,6 +143,7 @@ class canvasDraw {
 			endY: 0
 		}
 		this.isDraw = false
+		this.points = []
 	}
 	changeColor (color) {
 		this.ctx.strokeStyle = color
@@ -211,11 +212,16 @@ class canvasDraw {
 	}
 	draw () {
 		let that = this
-		//this.handleSawtooth()
 		this.canvas.onmousedown = (e) => {
 			that.ctx.beginPath()
+			that.ctx.lineWidth = 1.5
+			that.ctx.lineJoin = that.ctx.lineCap = 'round'
+			that.ctx.shadowBlur = 1.5
+			that.ctx.shadowColor = 'rgb(0, 0, 0)'
 			that.path.beginX = e.pageX - that.canvasRect.left
 			that.path.beginY = e.pageY - that.canvasRect.top
+			// 收集点
+			that.points.push({ x: that.path.beginX, y: that.path.beginY })
 			that.ctx.moveTo(
 				that.path.beginX,
 				that.path.beginY
@@ -235,28 +241,42 @@ class canvasDraw {
 	drawing (e) {
 		this.path.endX = e.pageX - this.canvasRect.left
 		this.path.endY = e.pageY - this.canvasRect.top
-		this.ctx.lineTo(
-			this.path.endX,
-			this.path.endY
-		)
+		this.ws.send(JSON.stringify({type: 'draw', beginX: this.path.beginX, beginY: this.path.beginY, endX: this.path.endX, endY: this.path.endY}))
+
+		this.points.push({ x: this.path.endX, y: this.path.endY })
+
+		if (this.points.length > 3) {
+			const lastTwoPoints = this.points.slice(-2)
+			const controlPoint = lastTwoPoints[0]
+			const endPoint = {
+				x: (lastTwoPoints[0].x + lastTwoPoints[1].x) / 2,
+				y: (lastTwoPoints[0].y + lastTwoPoints[1].y) / 2,
+			}
+			this.handleSawtooth({x: this.path.beginX, y: this.path.beginY }, controlPoint, endPoint)
+			this.path.beginX = endPoint.x
+			this.path.beginY = endPoint.y
+		}
+		// this.ctx.lineTo(
+		// 	this.path.endX,
+		// 	this.path.endY
+		// )
 		this.ctx.stroke()
-        this.ws.send(JSON.stringify({type: 'draw', beginX: this.path.beginX, beginY: this.path.beginY, endX: this.path.endX, endY: this.path.endY}))
+	}
+	getMidPoint (p1, p2) {
+		return {
+			x: p1.x + (p2.x - p1.x) / 2,
+			y: p1.y + (p2.y - p1.y) / 2
+		}
 	}
 	// clearCanvas () {
 	// 	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 	// 	this.ws.send(JSON.stringify({type: 'clear'}))
 	// }
-	// handleSawtooth () {
-	// 	let width = this.canvas.width
-	// 	let height = this.canvas.height
-	// 	if (window.devicePixelRatio) {
-	// 		this.canvas.style.width = width + 'px';
-	// 		this.canvas.style.height = height + 'px';
-	// 		this.canvas.height = height * window.devicePixelRatio
-	// 		this.canvas.width = width * window.devicePixelRatio
-	// 		this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio)
-	// 	}
-	// }
+	handleSawtooth (beginPoint, controlPoint, endPoint) {
+		this.ctx.beginPath();
+		this.ctx.moveTo(beginPoint.x, beginPoint.y);
+		this.ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y);
+	}
 }
 </script>
 

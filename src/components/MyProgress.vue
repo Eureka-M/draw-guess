@@ -24,6 +24,7 @@ export default {
     },
     watch: {
         countDownDuration(val) {
+            this.countDownTimer = null
             this.countDown(val)
         }
     },

@@ -11,6 +11,9 @@ git clone https://github.com/tomato126/draw-guess.git
 cd draw-guess
 npm i
 npm run dev
+
+服务器启动
+node app.js
 ```
 
 </br>
@@ -28,7 +31,7 @@ npm run dev
 |  |   └Login.vue
 |  ├─utils
 |  |   ├─guessWords.js
-|  |   └whoIsNextDrawer.js
+|  |   └ whoIsNextDrawer.js
 |  ├─store
 |  |   └store.js
 |  ├─router
@@ -96,3 +99,9 @@ npm run dev
   问题：在一轮一轮的游戏之后, sleep 每个端的不同影响（比如画笔端画图）导致进度条的不同步
   改进：sleep 之后发送 countDown 信令，各端每局游戏都能收到三次 countDown 的信令，收到信令立马改变进度条。保证各端基本同步的状态。
   遗留问题：一轮游戏之后 sleep10 秒接着就是一轮开始 sleep10 秒，出现的问题是 duration 相同，导致 store 不会触发更新，暂时解决将一轮游戏之后的 sleep 时间改成 15 秒。
+
+- 2022-03-15 画笔锯齿显示优化
+  原因：使用 lineTo 对点进行连接，受限于浏览器对 mousemove 事件的采集频率（浏览器是每隔一小段时间去采集鼠标坐标），因此鼠标移动越快，采集的两个临近点的距离就会越远，折线感就会加剧。
+  1. lineJoin 和 lineCap 属性平滑过度
+  2. 绘制二次贝塞尔曲线（quadraticCurveTo）[MDN](https://developer.mozilla.org/zh-CN/docs/Web/API/Canvas_API/Tutorial/Drawing_shapes)
+     参考链接：https://juejin.cn/post/6844903692747948039

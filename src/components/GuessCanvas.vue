@@ -28,7 +28,10 @@ export default {
             canvas: '',
             ctx: '',
             draw: {},
-            isDraw: 1
+            isDraw: 1,
+            points: [],
+            pathBeginX: null,
+            pathBeginY: null,
         }
     },
     watch: {
@@ -46,20 +49,59 @@ export default {
                     this.canvas = this.$refs.myCanvas
                     this.ctx = this.canvas.getContext('2d')
                     this.ctx.strokeStyle = "#000";
+                    this.ctx.lineWidth = 1.5
+                    this.ctx.lineJoin = this.ctx.lineCap = 'round'
+                    this.ctx.shadowBlur = 1.5
+                    this.ctx.shadowColor = 'rgb(0, 0, 0)'
                 })
             }
         },
         drawMsg (val) {
             if (val.type == "draw" || val.type =="stop") {
-				if (this.isDraw == 1 && val.type !="stop") {
-					this.ctx.beginPath()
-					this.ctx.moveTo(val.beginX, val.beginY)
-					this.isDraw = 0
-				} else if (this.isDraw == 0 && val.type =='stop') {
-					this.isDraw = 1
-				}
-				this.ctx.lineTo(val.endX, val.endY)
-				this.ctx.stroke()
+                if (val.type !="stop") {
+                    this.points.push({ x: val.beginX, y: val.beginY })
+                    this.points.push({ x: val.endX, y: val.endY })
+                }
+                if (this.isDraw == 1 && val.type !="stop") {
+				
+					
+                  
+                    this.ctx.beginPath()
+                    this.ctx.moveTo(val.beginX, val.beginY)
+                    
+                    this.pathBeginX = val.beginX
+                    this.pathBeginY = val.beginY
+                   
+
+                    
+                    this.isDraw = 0
+                } else if (this.isDraw == 0 && val.type =="stop") {
+                    this.ctx.beginPath()
+                    this.ctx.moveTo(val.beginX, val.beginY)
+                    this.isDraw = 1
+                }
+
+                if (this.points.length > 3) {
+                    const lastTwoPoints = this.points.slice(-2)
+                    const controlPoint = lastTwoPoints[0]
+                    const endPoint = {
+                        x: (lastTwoPoints[0].x + lastTwoPoints[1].x) / 2,
+                        y: (lastTwoPoints[0].y + lastTwoPoints[1].y) / 2,
+                    }
+                    
+                    this.ctx.beginPath()
+		            this.ctx.moveTo(this.pathBeginX, this.pathBeginY)
+                    this.ctx.quadraticCurveTo(controlPoint.x, controlPoint.y, endPoint.x, endPoint.y)
+
+                    this.pathBeginX = endPoint.x
+                    this.pathBeginY = endPoint.y
+
+                       
+                    }
+                this.ctx.stroke()
+				//this.ctx.lineTo(val.endX, val.endY)
+                
+				
 
 			} else if (val.type == 'drawLine') {
                 this.ctx.beginPath()
@@ -133,7 +175,8 @@ export default {
 
                 play()
             }
-        }
+        },
+        
             
     }
 }
