@@ -75,6 +75,9 @@ export default {
 					case 'circle':
 						this.draw.drawRound()
 						break
+					case 'radius':
+						this.draw.drawRadius()
+						break
 					case 'square':
 						this.draw.drawRect()
 						break
@@ -192,6 +195,21 @@ class canvasDraw {
 			that.ws.send(JSON.stringify({type: 'drawRect', beginX: this.path.beginX, beginY: this.path.beginY, rectWidth: this.path.endX - this.path.beginX, rectHeight: this.path.endY - this.path.beginY}))
 		}
 	}
+	drawBorder () {
+		let that = this
+		this.canvas.onmousedown = (e) => {
+			this.ctx.beginPath()
+			this.path.beginX = e.pageX - this.canvasRect.left
+			this.path.beginY = e.pageY - this.canvasRect.top
+		}
+		this.canvas.onmouseup = (e) => {
+			this.path.endX = e.pageX - this.canvasRect.left
+			this.path.endY = e.pageY - this.canvasRect.top
+			this.ctx.rect(this.path.beginX, this.path.beginY, this.path.endX - this.path.beginX, this.path.endY - this.path.beginY) 
+			this.ctx.stroke()
+			that.ws.send(JSON.stringify({type: 'drawBorder', beginX: this.path.beginX, beginY: this.path.beginY, rectWidth: this.path.endX - this.path.beginX, rectHeight: this.path.endY - this.path.beginY}))
+		}
+	}
 	drawRound () {
 		let that = this
 		this.canvas.onmousedown = (e) => {
@@ -208,6 +226,23 @@ class canvasDraw {
 			this.ctx.fill()
 			this.ctx.stroke()
 			that.ws.send(JSON.stringify({type: 'drawRound', beginX: this.path.beginX, beginY: this.path.beginY, roundWidth: width, roundHeight: height}))
+		}
+	}
+	drawRadius() {
+		let that = this
+		this.canvas.onmousedown = (e) => {
+			this.ctx.beginPath()
+			this.path.beginX = e.pageX - this.canvasRect.left
+			this.path.beginY = e.pageY - this.canvasRect.top
+		}
+		this.canvas.onmouseup = (e) => {
+			this.path.endX = e.pageX - this.canvasRect.left
+			this.path.endY = e.pageY - this.canvasRect.top
+			let width = this.path.endX - this.path.beginX
+			let height = this.path.endY - this.path.beginY
+			this.ctx.arc(this.path.beginX + width / 2, this.path.beginY + height / 2, Math.sqrt(width * width + height * height) / 2, 0, Math.PI * 2)
+			this.ctx.stroke()
+			that.ws.send(JSON.stringify({type: 'drawRadius', beginX: this.path.beginX, beginY: this.path.beginY, roundWidth: width, roundHeight: height}))
 		}
 	}
 	draw () {

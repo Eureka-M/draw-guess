@@ -84,7 +84,7 @@ export default {
 			}
 			
 			// 画画
-			if (msg.type == 'draw' || msg.type == 'stop' || msg.type == 'drawLine' || msg.type == 'drawRect' || msg.type == 'drawRound' || msg.type == 'clear') {
+			if (msg.type == 'draw' || msg.type == 'stop' || msg.type == 'drawLine' || msg.type == 'drawRect' || msg.type == 'drawRound' || msg.type == 'clear' || msg.type == 'drawBorder' || msg.type == 'drawRadius') {
 				this.$store.commit('draw', msg)
 			}
 

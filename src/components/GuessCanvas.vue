@@ -119,6 +119,15 @@ export default {
                 this.ctx.arc(val.beginX + val.roundWidth / 2, val.beginY + val.roundHeight / 2, Math.sqrt(val.roundWidth * val.roundWidth + val.roundHeight * val.roundHeight) / 2, 0, Math.PI * 2)
                 this.ctx.fill()
                 this.ctx.stroke()
+            } else if (val.type == 'drawRadius') {
+                this.ctx.beginPath()
+                this.ctx.arc(val.beginX + val.roundWidth / 2, val.beginY + val.roundHeight / 2, Math.sqrt(val.roundWidth * val.roundWidth + val.roundHeight * val.roundHeight) / 2, 0, Math.PI * 2)
+                this.ctx.stroke()
+            } else if (val.type == 'drawBorder') {
+                this.ctx.beginPath()
+				this.ctx.moveTo(val.beginX, val.beginY)
+                this.ctx.rect(val.beginX, val.beginY, val.rectWidth, val.rectHeight)
+			    this.ctx.stroke()
             }
             else if (val.type == 'clear'){
 				this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
