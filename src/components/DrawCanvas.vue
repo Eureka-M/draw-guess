@@ -291,10 +291,6 @@ class canvasDraw {
 			this.path.beginX = endPoint.x
 			this.path.beginY = endPoint.y
 		}
-		// this.ctx.lineTo(
-		// 	this.path.endX,
-		// 	this.path.endY
-		// )
 		this.ctx.stroke()
 	}
 	getMidPoint (p1, p2) {
@@ -303,10 +299,6 @@ class canvasDraw {
 			y: p1.y + (p2.y - p1.y) / 2
 		}
 	}
-	// clearCanvas () {
-	// 	this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
-	// 	this.ws.send(JSON.stringify({type: 'clear'}))
-	// }
 	handleSawtooth (beginPoint, controlPoint, endPoint) {
 		this.ctx.beginPath();
 		this.ctx.moveTo(beginPoint.x, beginPoint.y);

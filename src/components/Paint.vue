@@ -37,7 +37,7 @@ export default {
                 {"toolName": "circle"},
                 {"toolName": "radius"},
                 {"toolName": "line"},
-                {"toolName": "arc"}
+                {"toolName": ""}
             ],
             colors: new Array(12),
             toolIndex: 0,
