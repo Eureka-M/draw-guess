@@ -57,50 +57,40 @@ export default {
 		handleWsMessage (e) {
 			let msg = JSON.parse(e.data)
 			console.log(msg)
-
-			//用户登录返回（userList）
-			if (msg.type == 'loginRes') {
-				this.$store.commit('userList', msg.userList)
-			}
 			
-			// 聊天面板的消息
-			if (msg.type == 'chat') {
-				this.$store.commit('chatMsg', msg)
-			}
-
-			// 游戏开始通知
-			if (msg.type == 'gameFirstStart') {
-				this.$store.commit('gameFirstStart')
-			}
-
-			// 一轮游戏开始通知
-			if (msg.type == 'gameBegin') {
-				this.$store.commit('gameBegin', {status: 'begin', drawer: msg.drawer, guessWord: msg.guessWord})
-			}
-
-			// 一轮游戏结束通知
-			if (msg.type == 'gameOver') {
-				this.$store.commit('gameOver', {status: 'over'})
-			}
-			
-			// 画画
-			if (msg.type == 'draw' || msg.type == 'stop' || msg.type == 'drawLine' || msg.type == 'drawRect' || msg.type == 'drawRound' || msg.type == 'clear' || msg.type == 'drawBorder' || msg.type == 'drawRadius') {
-				this.$store.commit('draw', msg)
-			}
-
-			// 改变画笔颜色
-			if (msg.type == 'changeTools') {
-				this.$store.commit('changeTool', msg.tool)
-			}
-
-			//改变tool
-			if (msg.type == 'changeColor') {
-				this.$store.commit('changeColor', msg.color)
-			}
-
-			// 倒计时
-			if (msg.type == 'countDown') {
-				this.$store.commit('countDown', msg.duration)
+			switch (msg.type) {
+				case 'loginRes':
+					this.$store.commit('userList', msg.userList)
+					break;
+				case 'chat':
+					this.$store.commit('chatMsg', msg)
+					break;
+				case 'gameFirstStart':
+					this.$store.commit('gameFirstStart')
+					break;
+				case 'gameBegin':
+					this.$store.commit('gameBegin', {status: 'begin', drawer: msg.drawer, guessWord: msg.guessWord})
+					break;
+				case 'gameOver':
+					this.$store.commit('gameOver', {status: 'over'})
+					break;
+				case 'gameOver':
+					this.$store.commit('gameOver', {status: 'over'})
+					break;
+				case 'draw' || 'stop' || 'drawLine' || 'drawRect' || 'drawRect' || 'drawRound' || 'clear' || 'drawBorder' || 'drawRadius':
+					this.$store.commit('gameOver', {status: 'over'})
+					break;
+				case 'changeTools':
+					this.$store.commit('changeTool', msg.tool)
+					break;
+				case 'changeColor':
+					this.$store.commit('changeColor', msg.color)
+					break;
+				case 'countDown':
+					this.$store.commit('countDown', msg.duration)
+					break;
+				default:
+					break;
 			}
 
 		},
